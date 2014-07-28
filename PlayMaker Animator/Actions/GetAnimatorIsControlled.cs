@@ -84,15 +84,15 @@ namespace HutongGames.PlayMaker.Actions
 				return;
 			}
 			
-			bool _isControlled = _animator.IsControlled(_transform);
-			isControlled.Value = _isControlled;
+			//bool _isControlled = _animator.IsControlled(_transform);
+			//isControlled.Value = _isControlled;
 			
-			if (_isControlled)
-			{
-				Fsm.Event(isControlledEvent);
-			}else{
-				Fsm.Event(isNotControlledEvent);
-			}
+			//if (_isControlled)
+			//{
+			//	Fsm.Event(isControlledEvent);
+			//}else{
+			//	Fsm.Event(isNotControlledEvent);
+			//}
 		}
 		
 	}
