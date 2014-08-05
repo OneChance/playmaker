@@ -21,14 +21,13 @@ public class TypewriterEffect : MonoBehaviour
 		{
 			mLabel = GetComponent<UILabel>();
 			mLabel.supportEncoding = false;
-			mLabel.symbolStyle = UIFont.SymbolStyle.None;
-			Vector2 scale = mLabel.cachedTransform.localScale;
-			mLabel.font.WrapText(mLabel.text, out mText, mLabel.lineWidth / scale.x, mLabel.lineHeight / scale.y, mLabel.maxLineCount, false, UIFont.SymbolStyle.None);
+			mLabel.symbolStyle = NGUIText.SymbolStyle.None;
+			mText = mLabel.processedText;
 		}
 
 		if (mOffset < mText.Length)
 		{
-			if (mNextChar <= Time.time)
+			if (mNextChar <= RealTime.time)
 			{
 				charsPerSecond = Mathf.Max(1, charsPerSecond);
 
@@ -37,7 +36,7 @@ public class TypewriterEffect : MonoBehaviour
 				char c = mText[mOffset];
 				if (c == '.' || c == '\n' || c == '!' || c == '?') delay *= 4f;
 
-				mNextChar = Time.time + delay;
+				mNextChar = RealTime.time + delay;
 				mLabel.text = mText.Substring(0, ++mOffset);
 			}
 		}
