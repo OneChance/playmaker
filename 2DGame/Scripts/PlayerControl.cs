@@ -11,7 +11,7 @@ public class PlayerControl : MonoBehaviour
 		// Use this for initialization
 		void Start ()
 		{
-				weapon = GetComponent<WeaponScript> ();
+				weapon = GetComponentInChildren<WeaponScript> ();
 		}
 	
 		// Update is called once per frame
@@ -35,5 +35,29 @@ public class PlayerControl : MonoBehaviour
 		void FixedUpdate ()
 		{
 				rigidbody2D.velocity = movement;
+		}
+
+		void OnCollisionEnter2D (Collision2D collison)
+		{
+				
+				EnemyScript enemy = collison.gameObject.GetComponent<EnemyScript> ();
+
+				if (enemy != null) {
+						HealthScript enemyHealth = enemy.GetComponent<HealthScript> ();
+
+						if (enemyHealth != null) {
+
+								int enemyHp = enemyHealth.hp;
+
+								enemyHealth.OnDamage (enemyHp);
+
+								HealthScript playerHealth = GetComponent<HealthScript> ();
+
+								playerHealth.OnDamage (enemyHp);
+
+						}
+				}
+
+				
 		}
 }

@@ -8,6 +8,7 @@ public class ShotScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		gameObject.hideFlags = HideFlags.HideInHierarchy;
 		Destroy (gameObject,GetDestroyTime());
 	}
 	
