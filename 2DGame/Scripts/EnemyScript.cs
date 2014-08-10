@@ -14,10 +14,16 @@ public class EnemyScript : MonoBehaviour
 		// Update is called once per frame
 		void Update ()
 		{
-				if (weapons != null) {
-						for (int i=0; i<=weapons.GetUpperBound(0); i++) {
-								weapons [i].Attack (true);
-						}							
-				}
+				if (transform.renderer.isCamVisible (Camera.main)) {
+						if (weapons != null) {
+								for (int i=0; i<=weapons.GetUpperBound(0); i++) {
+										weapons [i].Attack (true);
+								}							
+						}
+				} else {
+						if (transform.position.x < Camera.main.transform.position.x) {
+								Destroy (gameObject);
+						}					
+				}	
 		}
 }

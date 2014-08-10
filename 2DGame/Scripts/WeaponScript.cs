@@ -17,7 +17,7 @@ public class WeaponScript : MonoBehaviour
 		// Use this for initialization
 		void Start ()
 		{
-				shotCooldown = 0;
+				shotCooldown = Random.Range (0, shotRate);
 		}
 	
 		// Update is called once per frame
