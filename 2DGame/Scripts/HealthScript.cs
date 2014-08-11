@@ -27,6 +27,8 @@ public class HealthScript : MonoBehaviour
 		{
 				if (hpBar != null && hpBar.value != desHp) {
 						hpBar.value = Mathf.Lerp (hpBar.value, desHp, Time.deltaTime);
+
+						//当目标HP与当前HP之间的差距小于0.01时,不再缓动
 						if (Mathf.Abs (hpBar.value - desHp) < 0.01f) {
 								hpBar.value = desHp;
 						}
@@ -40,7 +42,9 @@ public class HealthScript : MonoBehaviour
 
 				if (shot != null) {
 						if (shot.isEnemy != isEnemy) {
+								//子弹造成伤害
 								OnDamage (shot.damage);
+								//删除子弹
 								Destroy (shot.gameObject);
 						}	
 				}
@@ -52,9 +56,17 @@ public class HealthScript : MonoBehaviour
 				hp -= damage;
 
 				if (hp <= 0) {
+						//播放爆炸粒子动画
+						ParticalScript.instance.Explosion (transform.position);
+						//播放爆炸声音
+						SoundScript.instance.ExplosionSound ();
+
+						//删除死亡对象	
 						Destroy (gameObject);	
-						UpdateHpBar (false);
+						//造成死亡的攻击，血条不使用缓动效果
+						UpdateHpBar (false);				
 				} else {
+						//生命大于0的情况，血条使用缓动效果
 						UpdateHpBar (true);		
 				}
 				

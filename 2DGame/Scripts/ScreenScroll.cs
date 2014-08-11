@@ -18,6 +18,7 @@ public class ScreenScroll : MonoBehaviour
 		{
 				if (isLoop) {
 						backgrounds = new List<Transform> ();
+
 						for (int i=0; i<transform.childCount; i++) {
 
 								Transform t = transform.GetChild (i);
@@ -27,9 +28,11 @@ public class ScreenScroll : MonoBehaviour
 								}
 						}
 
-						backgrounds.OrderBy (one => one.position.x).ToList ();	
+						backgrounds = backgrounds.OrderBy (one => one.position.x).ToList ();	
 				}
 		}
+
+			
 	
 		// Update is called once per frame
 		void Update ()
@@ -41,15 +44,16 @@ public class ScreenScroll : MonoBehaviour
 						Camera.main.transform.Translate (movement);		
 				}
 				if (isLoop) {
+	
 						Transform first = backgrounds.FirstOrDefault ();
 						if (first != null) {
 
-								//Debug.Log(first.gameObject.tag+"  first:"+first.position.x +"  camera:"+ Camera.main.transform.position.x + " visi:"+first.renderer.isCamVisible (Camera.main));
-
 								if (first.position.x < Camera.main.transform.position.x) {
 										if (!first.renderer.isCamVisible (Camera.main)) {
+
 												//move to tail
 												Transform last = backgrounds.LastOrDefault ();
+
 												float lastSize = (last.renderer.bounds.max - last.renderer.bounds.min).x;
 												float firstSize = (first.renderer.bounds.max - first.renderer.bounds.min).x; 
 												first.position = new Vector3 (last.position.x + (lastSize / 2 + firstSize / 2) + offset, first.position.y, first.position.z);

@@ -31,6 +31,10 @@ public class WeaponScript : MonoBehaviour
 				if (canAttack) {
 						shotCooldown = shotRate;
 						Transform shot = Instantiate (shotPrefab) as Transform;	
+
+						//播放射击声音
+						SoundScript.instance.ShotSound (isEnemy);
+
 						shot.position = transform.position;
 						ShotScript initS = shot.GetComponent<ShotScript> ();
 						if (initS != null) {

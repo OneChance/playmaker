@@ -11,7 +11,9 @@ public class EnemyManager : MonoBehaviour
 		private Camera mainCam;
 		public GameObject[] enemyObjs; //敌人总类列表
 		private int enemySorts; //敌人种类数
-		private int offSet = 5; //产生敌人时，距离相机最右边的偏移量
+		private int offSetX = 5; //产生敌人时，距离相机水平偏移量
+		private int offSetY = 2; //产生敌人时，距离相机垂直偏移量	
+
 		public int maxNum = 4; //一次生产最大敌人数量
 
 		private int maxDistanceY = 6; //敌人最大垂直距离
@@ -42,7 +44,7 @@ public class EnemyManager : MonoBehaviour
 
 		void GenerateEnemy ()
 		{
-				float posX = mainCam.transform.position.x + mainCam.orthographicSize + offSet;
+				float posX = mainCam.ViewportToWorldPoint (new Vector3 (1, 0, 0)).x + offSetX;
 
 				int enemyNum = (int)(Random.value * maxNum) + 1;
 				
@@ -65,10 +67,12 @@ public class EnemyManager : MonoBehaviour
 		//根据敌人数量,决定第一个敌人的位置
 		float FirstPos (int enemyNum)
 		{
-				float range_min = mainCam.transform.position.y - mainCam.orthographicSize;
-				float range_max = mainCam.transform.position.y + mainCam.orthographicSize-2;
+				float range_min = mainCam.ViewportToWorldPoint (new Vector3 (0, 0, 0)).y + offSetY;
+				float range_max = mainCam.ViewportToWorldPoint (new Vector3 (0, 1, 0)).y - offSetY;
 
-				range_min = range_min + (Mathf.Pow (2, enemyNum) - 1) / Mathf.Pow (2, enemyNum - 1) * mainCam.orthographicSize;
+				float height = range_max - range_min;
+				
+				range_min = range_min + (Mathf.Pow (2, enemyNum) - 1) / Mathf.Pow (2, enemyNum) * height;
 
 				return Random.Range (range_min, range_max);
 		}
