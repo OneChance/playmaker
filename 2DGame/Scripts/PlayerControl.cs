@@ -89,4 +89,10 @@ public class PlayerControl : MonoBehaviour
 
 				trans.position = new Vector3 (Mathf.Clamp (trans.position.x, left, right), Mathf.Clamp (trans.position.y, bottom, top), trans.position.z);
 		}
+
+		void OnDestroy ()
+		{
+				EnemyManager.isGameOver = true;	
+				GameObject.Find ("GUI").AddComponent<GameOver> ();
+		}
 }

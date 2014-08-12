@@ -23,6 +23,7 @@ public class EnemyManager : MonoBehaviour
 		private int minDistanceX = 0; //敌人最小水平距离
 
 		public Transform enemyLayer;
+		public static bool isGameOver = false;
 
 		// Use this for initialization
 		void Start ()
@@ -33,13 +34,15 @@ public class EnemyManager : MonoBehaviour
 	
 		// Update is called once per frame
 		void Update ()
-		{
-				pastTime += Time.deltaTime;
-				if (pastTime > generateInterval) {
-						pastTime = 0;
-						//generate enemy
-						GenerateEnemy ();
-				}
+		{				
+				if (!isGameOver) {
+						pastTime += Time.deltaTime;
+						if (pastTime > generateInterval) {
+								pastTime = 0;
+								//generate enemy
+								GenerateEnemy ();
+						}
+				}			
 		}
 
 		void GenerateEnemy ()
