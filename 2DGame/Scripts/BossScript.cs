@@ -71,4 +71,18 @@ public class BossScript : MonoBehaviour
 						}							
 				}
 		}
+
+		void OnTriggerEnter2D (Collider2D collider)
+		{
+		
+				ShotScript shot = collider.gameObject.GetComponent<ShotScript> ();
+		
+				if (shot != null) {
+						if (shot.isEnemy == false) {
+								attackCooldown = Random.Range (minAttackCooldown, maxAttackCooldown);
+								attacking = false;
+								animator.SetTrigger ("Hit");
+						}	
+				}
+		}
 }

@@ -60,22 +60,19 @@ public class PlayerControl : MonoBehaviour
 		void OnCollisionEnter2D (Collision2D collison)
 		{
 				
-				EnemyScript enemy = collison.gameObject.GetComponent<EnemyScript> ();
+				HealthScript enemy = collison.gameObject.GetComponent<HealthScript> ();
 
 				if (enemy != null) {
-						HealthScript enemyHealth = enemy.GetComponent<HealthScript> ();
 
-						if (enemyHealth != null) {
-
-								int enemyHp = enemyHealth.hp;
-
-								enemyHealth.OnDamage (enemyHp);
-
-								HealthScript playerHealth = GetComponent<HealthScript> ();
-
-								playerHealth.OnDamage (enemyHp);
-
+						int enemyHp = enemy.hp;
+						
+						if (collison.gameObject.GetComponent<BossScript> () == null) {
+								enemy.OnDamage (enemyHp);
 						}
+
+						HealthScript playerHealth = GetComponent<HealthScript> ();
+
+						playerHealth.OnDamage (enemyHp);	
 				}
 		}
 

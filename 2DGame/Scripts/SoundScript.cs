@@ -8,10 +8,13 @@ public class SoundScript : MonoBehaviour
 		public AudioClip explosion;
 		public AudioClip shot_player;
 		public AudioClip shot_enemy;
+		private AudioSource audioSource;
 
 		void Awake ()
 		{
 				if (instance == null) {
+						audioSource = GetComponent<AudioSource> ();
+						audioSource.volume = 0.1f;
 						instance = this;
 				}
 		}
@@ -33,7 +36,9 @@ public class SoundScript : MonoBehaviour
 
 		private void PlaySound (AudioClip audio)
 		{
-				AudioSource.PlayClipAtPoint (audio, Vector3.zero);
+				audioSource.clip = audio;
+				audioSource.Play ();
+				//AudioSource.PlayClipAtPoint (audio, Vector3.zero);
 		}
 
 		// Use this for initialization
