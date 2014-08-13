@@ -93,6 +93,8 @@ public class PlayerControl : MonoBehaviour
 		void OnDestroy ()
 		{
 				EnemyManager.isGameOver = true;	
-				GameObject.Find ("GUI").AddComponent<GameOver> ();
+				if (GameObject.Find ("GUI") != null) {
+						GameObject.Find ("GUI").AddComponent<GameOver> ();
+				}
 		}
 }

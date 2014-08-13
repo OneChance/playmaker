@@ -9,15 +9,13 @@ public class ShotScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		gameObject.hideFlags = HideFlags.HideInHierarchy;
-		Destroy (gameObject,GetDestroyTime());
 	}
 	
 	// Update is called once per frame
 	void Update () {
-
+		if(!renderer.isCamVisible(Camera.main)){
+			Destroy(gameObject);
+		}
 	}
 
-	float GetDestroyTime(){
-		return 45 / GetComponent<AutoMoveScripts> ().speed.x;
-	}
 }

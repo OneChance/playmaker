@@ -9,7 +9,8 @@ public class EnemyManager : MonoBehaviour
 		public float generateInterval = 3; //敌人生成时间间隔
 		private float pastTime = 0;
 		private Camera mainCam;
-		public GameObject[] enemyObjs; //敌人总类列表
+		public GameObject[] enemyObjs; //敌人列表
+		public GameObject[] bossObjs; //Boss列表
 		private int enemySorts; //敌人种类数
 		private int offSetX = 5; //产生敌人时，距离相机水平偏移量
 		private int offSetY = 2; //产生敌人时，距离相机垂直偏移量	
@@ -24,6 +25,9 @@ public class EnemyManager : MonoBehaviour
 
 		public Transform enemyLayer;
 		public static bool isGameOver = false;
+		public int bossTime = 5; //5波小怪后出现boss
+		public int enemyTime = 0;
+		private bool bossCreate = false;
 
 		// Use this for initialization
 		void Start ()
@@ -35,7 +39,7 @@ public class EnemyManager : MonoBehaviour
 		// Update is called once per frame
 		void Update ()
 		{				
-				if (!isGameOver) {
+				if (!isGameOver && !bossCreate) {
 						pastTime += Time.deltaTime;
 						if (pastTime > generateInterval) {
 								pastTime = 0;
@@ -45,26 +49,51 @@ public class EnemyManager : MonoBehaviour
 				}			
 		}
 
+		void GenerateBoss ()
+		{
+				bossCreate = true;
+				//前景停止滚动
+				ScreenScroll[] ss = FindObjectsOfType<ScreenScroll> ();	
+				for (int i=0; i<ss.Length; i++) {
+						if (ss [i].linkedToCamera) {
+								ss [i].speed = Vector2.zero;
+						}
+				}
+		}
+
 		void GenerateEnemy ()
 		{
+				
 				float posX = mainCam.ViewportToWorldPoint (new Vector3 (1, 0, 0)).x + offSetX;
 
-				int enemyNum = (int)(Random.value * maxNum) + 1;
+				if (enemyTime == bossTime) {
+						//创建Boss
+						GenerateBoss ();
+						float lastPos = FirstPos (1);
+						GameObject goIns = Instantiate (bossObjs [0], new Vector3 (posX + Random.Range (minDistanceX, maxDistanceX), lastPos, enemyLayer.position.z), Quaternion.identity) as GameObject; 
+						goIns.transform.parent = enemyLayer;						
+
+				} else {
+						enemyTime++;
+			
+						int enemyNum = (int)(Random.value * maxNum) + 1;
+			
+						//第一个敌人位置
+						float lastPos = FirstPos (enemyNum);
+			
+						for (int i=0; i<enemyNum; i++) {				
 				
-				//第一个敌人位置
-				float lastPos = FirstPos (enemyNum);
-
-				for (int i=0; i<enemyNum; i++) {				
-
-						int enemySort = (int)(Random.value * enemySorts);
-						GameObject go = enemyObjs [enemySort];
-						
-						GameObject goIns = Instantiate (go, new Vector3 (posX + Random.Range (minDistanceX, maxDistanceX), lastPos, enemyLayer.position.z), Quaternion.identity) as GameObject; 
-						goIns.transform.parent = enemyLayer;	
-					
-						lastPos -= Random.Range (minDistanceY, maxDistanceY);
-
+								int enemySort = (int)(Random.value * enemySorts);
+								GameObject go = enemyObjs [enemySort];
+				
+								GameObject goIns = Instantiate (go, new Vector3 (posX + Random.Range (minDistanceX, maxDistanceX), lastPos, enemyLayer.position.z), Quaternion.identity) as GameObject; 
+								goIns.transform.parent = enemyLayer;	
+				
+								lastPos -= Random.Range (minDistanceY, maxDistanceY);
+				
+						}
 				}
+				
 		}
 		
 		//根据敌人数量,决定第一个敌人的位置
