@@ -37,6 +37,7 @@ public class UIFont : MonoBehaviour
 	[HideInInspector][SerializeField] FontStyle mDynamicFontStyle = FontStyle.Normal;
 
 	// Cached value
+	[System.NonSerialized]
 	UISpriteData mSprite = null;
 	int mPMA = -1;
 	int mPacked = -1;
@@ -62,19 +63,41 @@ public class UIFont : MonoBehaviour
 	/// Original width of the font's texture in pixels.
 	/// </summary>
 
-	public int texWidth { get { return (mReplacement != null) ? mReplacement.texWidth : ((mFont != null) ? mFont.texWidth : 1); } }
+	public int texWidth
+	{
+		get
+		{
+			return (mReplacement != null) ? mReplacement.texWidth : ((mFont != null) ? mFont.texWidth : 1);
+		}
+		set
+		{
+			if (mReplacement != null) mReplacement.texWidth = value;
+			else if (mFont != null) mFont.texWidth = value;
+		}
+	}
 
 	/// <summary>
 	/// Original height of the font's texture in pixels.
 	/// </summary>
 
-	public int texHeight { get { return (mReplacement != null) ? mReplacement.texHeight : ((mFont != null) ? mFont.texHeight : 1); } }
+	public int texHeight
+	{
+		get
+		{
+			return (mReplacement != null) ? mReplacement.texHeight : ((mFont != null) ? mFont.texHeight : 1);
+		}
+		set
+		{
+			if (mReplacement != null) mReplacement.texHeight = value;
+			else if (mFont != null) mFont.texHeight = value;
+		}
+	}
 
 	/// <summary>
 	/// Whether the font has any symbols defined.
 	/// </summary>
 
-	public bool hasSymbols { get { return (mReplacement != null) ? mReplacement.hasSymbols : mSymbols.Count != 0; } }
+	public bool hasSymbols { get { return (mReplacement != null) ? mReplacement.hasSymbols : (mSymbols != null && mSymbols.Count != 0); } }
 
 	/// <summary>
 	/// List of symbols within the font.
@@ -154,6 +177,13 @@ public class UIFont : MonoBehaviour
 			}
 		}
 	}
+
+	/// <summary>
+	/// Whether the font is using a premultiplied alpha material.
+	/// </summary>
+
+	[System.Obsolete("Use UIFont.premultipliedAlphaShader instead")]
+	public bool premultipliedAlpha { get { return premultipliedAlphaShader; } }
 
 	/// <summary>
 	/// Whether the font is using a premultiplied alpha material.
@@ -285,7 +315,7 @@ public class UIFont : MonoBehaviour
 		get
 		{
 			if (mReplacement != null) return mReplacement.defaultSize;
-			if (isDynamic) return mDynamicFontSize;
+			if (isDynamic || mFont == null) return mDynamicFontSize;
 			return mFont.charSize;
 		}
 		set
@@ -305,16 +335,13 @@ public class UIFont : MonoBehaviour
 		{
 			if (mReplacement != null) return mReplacement.sprite;
 
-			if (mSprite == null)
+			if (mSprite == null && mAtlas != null && !string.IsNullOrEmpty(mFont.spriteName))
 			{
-				if (mAtlas != null && !string.IsNullOrEmpty(mFont.spriteName))
-				{
-					mSprite = mAtlas.GetSprite(mFont.spriteName);
+				mSprite = mAtlas.GetSprite(mFont.spriteName);
 
-					if (mSprite == null) mSprite = mAtlas.GetSprite(name);
-					if (mSprite == null) mFont.spriteName = null;
-					else UpdateUVRect();
-				}
+				if (mSprite == null) mSprite = mAtlas.GetSprite(name);
+				if (mSprite == null) mFont.spriteName = null;
+				else UpdateUVRect();
 
 				for (int i = 0, imax = mSymbols.Count; i < imax; ++i)
 					symbols[i].MarkAsChanged();
@@ -345,6 +372,14 @@ public class UIFont : MonoBehaviour
 				if (rep != null && rep.replacement == this) rep.replacement = null;
 				if (mReplacement != null) MarkAsChanged();
 				mReplacement = rep;
+
+				if (rep != null)
+				{
+					mPMA = -1;
+					mMat = null;
+					mFont = null;
+					mDynamicFont = null;
+				}
 				MarkAsChanged();
 			}
 		}
@@ -488,7 +523,7 @@ public class UIFont : MonoBehaviour
 		}
 
 		// Clear all symbols
-		for (int i = 0, imax = mSymbols.Count; i < imax; ++i)
+		for (int i = 0, imax = symbols.Count; i < imax; ++i)
 			symbols[i].MarkAsChanged();
 	}
 
