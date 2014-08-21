@@ -66,7 +66,7 @@ public static class Localization
 	static public Dictionary<string, string[]> dictionary
 	{
 		get
-		{
+		{ 
 			if (!localizationHasBeenSet) language = PlayerPrefs.GetString("Language", "English");
 			return mDictionary;
 		}
