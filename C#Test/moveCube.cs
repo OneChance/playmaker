@@ -12,7 +12,7 @@ public class moveCube : MonoBehaviour
 		// Use this for initialization
 		void Start ()
 		{
-	
+				//rigidbody.AddForce (Vector3.forward * 1000);
 		}
 	
 		// Update is called once per frame
