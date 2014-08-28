@@ -1,0 +1,3 @@
+﻿KEY,English,Français,CN
+Flag,Flag-US,Flag-FR,Flag-CN
+Language,English,Français,中文
